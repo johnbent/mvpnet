@@ -105,7 +105,7 @@ int pktfmt_arp_req_qrank(uint8_t *ef, int efsz) {
  * generate ARP reply message from ARP request message.  caller
  * must ensure req and rep are the correct size.
  */
-void pkgfmt_arp_mkreply(uint8_t *req, int qrank, uint8_t *rep) {
+void pktfmt_arp_mkreply(uint8_t *req, int qrank, uint8_t *rep) {
 
     /*
      * set up ethernet frame header.  reply dst is req source.
