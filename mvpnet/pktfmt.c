@@ -81,7 +81,7 @@ static uint8_t arp_rep_hdr[8] = {
 int pktfmt_arp_req_qrank(uint8_t *ef, int efsz) {
     int qrank;
 
-    /* must be an ethernt broadcast */
+    /* must be an ethernet broadcast */
     if (memcmp(&ef[ETH_DSTOFF], ether_bcast, sizeof(ether_bcast)) != 0)
         return(-1);
 
