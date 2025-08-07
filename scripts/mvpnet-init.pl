@@ -38,7 +38,7 @@ sub savefile {
 
 
 my($ip, $try, $type, $val, $wsize, $rank, $iface);
-my($h, @hosts, $lcv, @mpihosts, $gotinet, $myaddr, $rv);
+my($h, @hosts, $lcv, $nlcv, @mpihosts, $gotinet, $myaddr, $rv);
 
 open($ip, "ip -o -f link addr|") || die "cannot open ip link";
 while (<$ip>) {
@@ -76,8 +76,10 @@ while (<$h>) {
 close($h);
 push(@hosts, "#wsize: $wsize\n");
 for ($lcv = 0 ; $lcv < $wsize ; $lcv++) {
-    push(@hosts, sprintf("10.%d.%d.%d\tn%04d\n", ($lcv >> 16) & 0xff,
-          ($lcv >> 8) & 0xff, $lcv & 0xff, $lcv));
+    # account for our host IP addressing scheme starting at 1, not 0
+    $nlcv = $lcv + 1;
+    push(@hosts, sprintf("10.%d.%d.%d\tn%04d\n", ($nlcv >> 16) & 0xff,
+          ($nlcv >> 8) & 0xff, $nlcv & 0xff, $nlcv));
     push(@mpihosts, sprintf("n%04d\n", $lcv));
 }
 
@@ -103,10 +105,12 @@ if (defined($rank)) {
     }
     close($ip);
     if ($gotinet == 0) {
+    	# account for our host IP addressing scheme starting at 1, not 0
+    	$rank++;
         $myaddr = sprintf("10.%d.%d.%d/8", ($rank >> 16) & 0xff,
                           ($rank >> 8) & 0xff, $rank & 0xff);
         print "assign addr $myaddr to $iface\n";
-        $rv = system "ip", "addr", "add", $myaddr, "dev", $iface;
+        $rv = system "ip", "addr", "add", $myaddr, "broadcast", "10.255.255.255", "dev", $iface;
         die "ip failed" if ($rv);
     } else {
         print "$iface already has an ip address\n";

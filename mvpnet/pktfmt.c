@@ -71,7 +71,7 @@ static uint8_t arp_rep_hdr[8] = {
 #define ARP_THW_OFF        (ARP_SIP_OFF+IP_ADDRSZ)     /* target hw addr */
 #define ARP_TIP_OFF        (ARP_THW_OFF+ETH_ADDRSIZE)  /* target ip addr */
 
-#define ARP_SIZE            (ARP_TIP_OFF+IP_ADDRSZ)    /* incl ether header */
+#define ARP_SIZE           (ARP_TIP_OFF+IP_ADDRSZ)     /* incl ether header */
 
 /*
  * check if the frame is a broadcast ARP request packet.  if
@@ -98,7 +98,9 @@ int pktfmt_arp_req_qrank(uint8_t *ef, int efsz) {
     qrank = (ef[ARP_TIP_OFF+1] << 16) |
             (ef[ARP_TIP_OFF+2] << 8)  |  ef[ARP_TIP_OFF+3];
 
-    return(qrank);
+    /* our host IP addressing scheme starts at 1, so return one less
+     * to get the actual rank of the corresponding host */
+    return(qrank-1);
 }
 
 /*
