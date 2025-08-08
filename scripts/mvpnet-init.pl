@@ -79,7 +79,7 @@ for ($lcv = 0 ; $lcv < $wsize ; $lcv++) {
     # account for our host IP addressing scheme starting at 1, not 0
     $nlcv = $lcv + 1;
     push(@hosts, sprintf("10.%d.%d.%d\tn%04d\n", ($nlcv >> 16) & 0xff,
-          ($nlcv >> 8) & 0xff, $nlcv & 0xff, $nlcv));
+          ($nlcv >> 8) & 0xff, $nlcv & 0xff, $lcv));
     push(@mpihosts, sprintf("n%04d\n", $lcv));
 }
 
